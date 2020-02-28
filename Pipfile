@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+flake8-import-order = "*"
+flake8-bugbear = "*"
+flake8-eradicate = "*"
+flake8-broken-line = "*"
+flake8-print = "*"
+pep8-naming = "*"
+flake8-unused-arguments = "*"
+flake8-builtins = "*"
+
+[packages]
+sistemka = {editable = true,git = "https://github.com/Sistemka/Sistemka.git"}
+python-telegram-bot = "*"
+python-dotenv = "*"
+peewee = "*"
+peewee-db-evolve = "*"
+psycopg2-binary = "*"
+
+[requires]
+python_version = "3.6"
