@@ -106,3 +106,4 @@ venv.bak/
 .DS_Store
 ClientBot/.DS_Store
 persistent_data
+settings/env

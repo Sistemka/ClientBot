@@ -22,6 +22,10 @@ def full_process_image(update, context):
     file = context.bot.get_file(image_id)
     file.download(image_to_download_path)
 
+    if update.message['caption'] == 'se':
+        search_image(update, context)
+        return
+
     context.bot.send_message(
         text='Взял в обработку, подожди немного 🧐',
         chat_id=update.effective_user.id,
@@ -54,6 +58,39 @@ def full_process_image(update, context):
     shutil.rmtree(files_to_return_dir)
 
 
+def search_image(update, context):
+    image_id = update.message.photo[0].file_id
+
+    image_to_download_path = Path(FILES_DIR, f"{uuid.uuid4()}.jpeg")
+    file = context.bot.get_file(image_id)
+    file.download(image_to_download_path)
+
+    context.bot.send_message(
+        text='Начинаю искать похожие картинки в базе, подожди немного 🧐',
+        chat_id=update.effective_user.id,
+    )
+
+    files_to_return_dir = PIPELINES['se'](image_to_download_path)
+    images_in_directory = sorted(os.listdir(files_to_return_dir))
+
+    media = []
+    for image in images_in_directory:
+        media.append(InputMediaPhoto(open(Path(files_to_return_dir, image), 'rb')))
+    context.bot.send_media_group(
+        chat_id=update.effective_user.id,
+        media=media
+    )
+    os.remove(image_to_download_path)
+    shutil.rmtree(files_to_return_dir)
+
+
+def send_message(update, context):
+    context.bot.send_message(
+        text='Нужно скинуть фотку 😑',
+        chat_id=update.effective_user.id,
+    )
+
+
 def error(update, context):
     logger.error('Update "%s" caused error "%s"', update, context.error)
     context.bot.send_message(
@@ -64,4 +101,5 @@ def error(update, context):
 
 def register(dp):
     dp.add_handler(MessageHandler(Filters.photo, full_process_image))
+    dp.add_handler(MessageHandler(Filters.text, send_message))
     dp.add_error_handler(error)
