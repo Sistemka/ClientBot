@@ -18,7 +18,7 @@ class BaseModel(Model):
 
 class Users(BaseModel):
     telegram_id = IntegerField(unique=True, primary_key=True)
-    username = CharField()
+    username = CharField(null=True)
     created_dt = DateTimeField(default=dt.now())
     last_seen_dt = DateTimeField(default=dt.now())
 
