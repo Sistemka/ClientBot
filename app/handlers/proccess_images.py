@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @send_action(ChatAction.UPLOAD_PHOTO)
 def full_process_image(update, context):
-    image_id = update.message.photo[0].file_id
+    image_id = update.message.photo[-1].file_id
 
     image_to_download_path = Path(FILES_DIR, f"{uuid.uuid4()}.jpeg")
     file = context.bot.get_file(image_id)
@@ -40,11 +40,31 @@ def full_process_image(update, context):
         os.remove(image_to_download_path)
         return
 
-    images_in_directory = sorted(os.listdir(files_to_return_dir))
+    images_in_directory = os.listdir(files_to_return_dir)
+
+    # remove full image from list
+    full_image = None
+    for image in images_in_directory:
+        if image.startswith('full'):
+            full_image = image
+            break
+
+    cropped_images_in_directory = [
+        image for image in images_in_directory
+        if not image.startswith('full')
+    ]
+
+    images_in_directory = sorted(cropped_images_in_directory)
     images_pairs = [
         images_in_directory[n:n + 2] for n
         in range(0, len(images_in_directory), 2)
     ]
+
+    if full_image:
+        context.bot.send_photo(
+            chat_id=update.effective_user.id,
+            photo=open(Path(files_to_return_dir, full_image), 'rb')
+        )
 
     for image_pair in images_pairs:
         context.bot.send_media_group(
