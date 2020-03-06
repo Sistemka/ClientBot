@@ -11,8 +11,8 @@ def start(update, context):
     username = update.effective_user.username
     user, _ = Users.get_or_create(
         telegram_id=uid,
-        username=username
     )
+    user.username = username
     user.save()
 
     context.bot.send_message(
