@@ -13,12 +13,18 @@ def generate_path_for_similar_image(image_path):
 
 def process(image_path):
     cropped_images_dir = Path(FILES_DIR, str(uuid.uuid4()))
-    cropped_images = segmentator.get_files(
+    cropped_and_full_images = segmentator.get_files(
         image_path=image_path,
         cropped_images_dir=cropped_images_dir
     )
-    if cropped_images is None:
+    if cropped_and_full_images is None:
         return None
+
+    # remove full image from cropped list
+    cropped_images = [
+        image for image in cropped_and_full_images
+        if not image.split('/')[-1].startswith('full')
+    ]
 
     simular_urls = []
     for image in cropped_images:
