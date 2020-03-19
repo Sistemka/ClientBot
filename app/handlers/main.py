@@ -16,7 +16,7 @@ def start(update, context):
     user.save()
 
     context.bot.send_message(
-        text="Привет! Я роспознаю одежду на картинке и ищу похожую 👋!",
+        text="Привет! Я распознаю одежду на картинке и ищу похожую 👋!",
         chat_id=update.effective_user.id,
         parse_mode=ParseMode.MARKDOWN
     )

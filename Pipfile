@@ -15,12 +15,12 @@ flake8-unused-arguments = "*"
 flake8-builtins = "*"
 
 [packages]
-sistemka = {editable = true,git = "https://github.com/Sistemka/Sistemka.git"}
 python-telegram-bot = "*"
 python-dotenv = "*"
 peewee = "*"
 peewee-db-evolve = "*"
 psycopg2-binary = "*"
+sistemka = {editable = true,git = "https://github.com/Sistemka/Sistemka.git"}
 
 [requires]
 python_version = "3.6"
