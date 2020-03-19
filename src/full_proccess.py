@@ -47,7 +47,7 @@ def process(image_path):
             info = image_manager.get_image_info(url)
             for i in info.keys():
                 if str(i) == 'link':
-                    f.write(str(info.get(i))+'\n')
+                    f.write(str(info.get(i)) + '\n')
                 elif str(i) not in {'path', 'пол', 'type', 'link'}:
                     f.write(f'{i}: {info.get(i)}\n')
 

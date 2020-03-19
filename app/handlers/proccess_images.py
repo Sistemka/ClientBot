@@ -68,7 +68,7 @@ def full_process_image(update, context):
 
     for image_pair in images_pairs:
         context.bot.send_message(
-            text = open(Path(files_to_return_dir, image_pair[1]), 'r').read(),
+            text=open(Path(files_to_return_dir, image_pair[1]), 'r').read(),
             chat_id=update.effective_user.id,
         )
         context.bot.send_media_group(
