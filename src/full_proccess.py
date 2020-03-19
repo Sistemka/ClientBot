@@ -11,6 +11,12 @@ def generate_path_for_similar_image(image_path):
     return Path(image_path.parent, similar_image_name)
 
 
+def generate_path_for_similar_image_descr(image_path):
+    image_path = Path(image_path)
+    similar_image_name = f"{image_path.with_suffix('').name}_descr.txt"
+    return Path(image_path.parent, similar_image_name)
+
+
 def process(image_path):
     cropped_images_dir = Path(FILES_DIR, str(uuid.uuid4()))
     cropped_and_full_images = segmentator.get_files(
@@ -37,5 +43,12 @@ def process(image_path):
             url=url,
             path_to_download=generate_path_for_similar_image(image)
         )
+        with open(generate_path_for_similar_image_descr(image), 'w') as f:
+            info = image_manager.get_image_info(url)
+            for i in info.keys():
+                if str(i) == 'link':
+                    f.write(str(info.get(i))+'\n')
+                elif str(i) not in {'path', 'пол', 'type', 'link'}:
+                    f.write(f'{i}: {info.get(i)}\n')
 
     return cropped_images_dir

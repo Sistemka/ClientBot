@@ -56,8 +56,8 @@ def full_process_image(update, context):
 
     images_in_directory = sorted(cropped_images_in_directory)
     images_pairs = [
-        images_in_directory[n:n + 2] for n
-        in range(0, len(images_in_directory), 2)
+        images_in_directory[n:n + 3] for n
+        in range(0, len(images_in_directory), 3)
     ]
 
     if full_image:
@@ -67,11 +67,15 @@ def full_process_image(update, context):
         )
 
     for image_pair in images_pairs:
+        context.bot.send_message(
+            text = open(Path(files_to_return_dir, image_pair[1]), 'r').read(),
+            chat_id=update.effective_user.id,
+        )
         context.bot.send_media_group(
             chat_id=update.effective_user.id,
             media=[
                 InputMediaPhoto(open(Path(files_to_return_dir, image_pair[0]), 'rb')),
-                InputMediaPhoto(open(Path(files_to_return_dir, image_pair[1]), 'rb'))
+                InputMediaPhoto(open(Path(files_to_return_dir, image_pair[2]), 'rb'))
             ]
         )
     os.remove(image_to_download_path)
