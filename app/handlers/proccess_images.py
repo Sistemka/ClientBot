@@ -30,7 +30,9 @@ def full_process_image(update, context):
 
     image_to_download_path = Path(FILES_DIR, f"{uuid.uuid4()}.jpeg")
 
-    user.photos.append(image_to_download_path)
+    if user.photos is None:
+        user.photos = []
+    user.photos.append(image_to_download_path.as_posix())
     user.save()
 
     file = context.bot.get_file(image_id)
