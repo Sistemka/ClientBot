@@ -1,9 +1,12 @@
 import os
+import re
+import io
 import uuid
 import shutil
 import logging
 from pathlib import Path
 
+import requests
 from telegram import ChatAction, InputMediaPhoto, InputMedia
 from telegram.ext import Filters, MessageHandler
 
@@ -78,17 +81,28 @@ def full_process_image(update, context):
         )
 
     for image_pair in images_pairs:
-        context.bot.send_message(
-            text=open(Path(files_to_return_dir, image_pair[1]), 'r').read(),
-            chat_id=update.effective_user.id,
-        )
-        # context.bot.send_media_group(
-        #     chat_id=update.effective_user.id,
-        #     media=[
-        #         InputMediaPhoto(open(Path(files_to_return_dir, image_pair[0]), 'rb')),
-        #         InputMediaPhoto(open(Path(files_to_return_dir, image_pair[2]), 'rb'))
-        #     ]
-        # )
+        try:
+            link = open(Path(files_to_return_dir,
+                             image_pair[1]), 'r').readline().replace('\n', '')
+            text = requests.get(link).text
+            pic_link = re.findall(
+                r'https:\/\/cdn\.ennergiia\.com\/new-images\/ennergiia-catalog\/\w+\/\w+\/\w+\.jpg', text)[0]
+            pic = io.BytesIO(requests.get(pic_link).content)
+            context.bot.send_media_group(
+                chat_id=update.effective_user.id,
+                media=[
+                    InputMediaPhoto(open(Path(files_to_return_dir, image_pair[0]), 'rb'),
+                                    caption=open(Path(files_to_return_dir, image_pair[1]), 'r').read()),
+                    InputMediaPhoto(pic)
+                ]
+            )
+        except Exception:
+            context.bot.send_message(
+                text=open(Path(files_to_return_dir,
+                               image_pair[1]), 'r').read(),
+                chat_id=update.effective_user.id,
+            )
+
     shutil.rmtree(files_to_return_dir)
 
 
