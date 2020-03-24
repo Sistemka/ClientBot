@@ -21,7 +21,8 @@ def process(image_path):
     cropped_images_dir = Path(FILES_DIR, str(uuid.uuid4()))
     cropped_and_full_images = segmentator.get_files(
         image_path=image_path,
-        cropped_images_dir=cropped_images_dir
+        cropped_images_dir=cropped_images_dir,
+        mode='mask'
     )
     if cropped_and_full_images is None:
         return None
